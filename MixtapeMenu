@@ -1,0 +1,145 @@
+class Track {
+    constructor(title, artist) {
+        this.title = title;
+        this.artist = artist;
+    }
+
+    describe() {
+        return `${this.title} by ${this.artist}.`
+    }
+}
+
+class Mixtape {
+    constructor(name) {
+        this.name = name;
+        this.tracks = [];
+    }
+
+    addTrack(track){
+        if (track instanceof Track) {
+            this.tracks.push(track);
+        } else {
+            throw new Error ('Something went wrong. Please reformat your tex and try again.')
+        }
+    }
+
+    describe() {
+        return `${this.mixtape} has ${this.mixtape.length} tracks.`
+    }
+}
+
+class Menu {
+    constructor() {
+        this.mixtapes = [];
+        this.selectedMixtape = null;
+    }
+
+    start() {
+        let selection = this.showMainMenuOptions();
+
+        while (selection != 0) {
+            switch (selection) {
+                case '1':
+                    this.createMixtape();
+                    break;
+                case '2':
+                    this.deleteMixtape();
+                    break;
+                case '3':
+                    this.viewMixtapes();
+                    break;
+                case '4':
+                    this.displayMixtapes();
+                    break;
+                default:
+                    selection = 0;    
+            }
+            selection = this.showMainMenuOptions();
+        }
+
+        alert('Thanks for creating! <3 ')
+    }
+
+    showMainMenuOptions() {
+        return prompt (`
+            0) Exit
+            1) Create New Mixtape
+            2) Delete Mixtape
+            3) View Mixtape
+            4) Display All Mixtapes 
+        `);
+    }
+
+    showMixtapeMenuOptions (mixtapeInfo) {
+        return prompt (`
+        0) Back
+        1) Add Tracks
+        2) Delete Tracks
+
+        <3--<3--<3--<3--<3--<3
+
+        ${mixtapeInfo}
+        `);
+    }
+
+    deleteMixtape() {
+        let index = prompt(`With 0 representing the first Mixtape, which Mixtape would you like to delete`);
+        if (index > -1 && index < this.mixtapes.length) {
+            this.mixtapes.splice(index, 1)
+        }
+    }
+
+    createMixtape() {
+        let name = prompt('What would you like to name this new Mixtape?');
+        this.mixtapes.push(new Mixtape(name));
+    }
+
+    displayMixtapes() {
+        let mixtapeString = '';
+        for (let i = 0; i < this.mixtapes.length; i++) {
+            mixtapeString += i + ') ' + this.mixtapes[i].name + '\n';
+        }
+        alert(mixtapeString);
+    }
+    
+    viewMixtapes() {
+        let index = prompt (`With 0 representing the first Mixtape, which Mixtape would you like to view?`);
+        if (index > -1 && index < this.mixtapes.length) {
+            this.selectedMixtape = this.mixtapes[index];
+            let description = `Mixtape Name: + ${this.selectedMixtape.name} `;
+
+            for (let i = 0; i < this.selectedMixtape.tracks.length; i++) {
+                description += i + ') ' + this.selectedMixtape.tracks[i].title
+                 + ' - ' + this.selectedMixtape.tracks[i].artist + '\n';
+             }
+
+            let selection = this.showMixtapeMenuOptions(description);
+            switch(selection) {
+                case '1':
+                    this.addTrack();
+                    break;
+                case '2':
+                    this.deleteTrack();
+             } 
+        }
+    }
+
+    
+
+
+    addTrack() {
+        let title = prompt(`What is the title of the track you would like to add to ${this.selectedMixtape.name}?`);
+        let artist = prompt(`What is the name of the artist of this track?`);
+        this.selectedMixtape.tracks.push(new Track(title, artist));
+    }
+
+    deleteTrack() {
+        let index = prompt(`With 0 representing the first track, which track would you like to delete?`);
+        if (index > -1 && index < this.selectedMixtape.tracks.length) {
+            this.selectedMixtape.tracks.splice(index, 1);
+        }
+    }
+}
+
+let menu = new Menu();
+menu.start();
